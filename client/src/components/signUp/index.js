@@ -1,36 +1,84 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import green from '../../img/green.png';
 import Button from '../../styles/button';
+import { registerUser } from '../../actions/auth';
+import { useDispatch } from 'react-redux';
 
 const SignUp = () => {
+  const [form, setFormDate] = useState({
+    username: '',
+    email: '',
+    password: '',
+    password2: '',
+  });
+  const { username, email, password, password2 } = form;
+  const dispatch = useDispatch();
+
+  const onChange = (e) => {
+    setFormDate({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (password !== password2) {
+      console.log('password do not match');
+    } else {
+      dispatch(registerUser(form));
+    }
+  };
+
   return (
     <Container>
-      <Img src={green} alt='earth'></Img>
+      <Img src={green} alt="earth"></Img>
       <h1>Create your account</h1>
-      <Form>
+      <Form onSubmit={submit}>
         <FormGroup>
-          <Input type='text' name='username' required />
+          <Input
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => onChange(e)}
+            required
+          />
           <p>Username</p>
         </FormGroup>
         <FormGroup>
-          <Input type='email' name='email' required />
+          <Input
+            type="email"
+            name="email"
+            value={email}
+            onChange={(e) => onChange(e)}
+            required
+          />
           <p>Email Address</p>
         </FormGroup>
         <FormGroup>
-          <Input type='password' name='password' minLength='6' />
+          <Input
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => onChange(e)}
+            minLength="6"
+          />
           <p>Password</p>
         </FormGroup>
         <FormGroup>
-          <Input type='password' name='password2' minLength='6' />
+          <Input
+            type="password"
+            name="password2"
+            value={password2}
+            onChange={(e) => onChange(e)}
+            minLength="6"
+          />
           <p>Confirm password</p>
         </FormGroup>
-        <Button type='submit'>Sign Up</Button>
+        <Button type="submit">Sign Up</Button>
       </Form>
-      <p className='foot-text'>
+      <p className="foot-text">
         Already have an account?﹒
-        <Link to='/login' className='link'>
+        <Link to="/login" className="link">
           Log In
         </Link>
       </p>

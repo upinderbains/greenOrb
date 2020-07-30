@@ -1,39 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import green from '../../img/green.png';
 import Button from '../../styles/button';
+import { useSelector, useDispatch } from 'react-redux';
+import { loginUser } from '../../actions/auth';
 
 const Login = () => {
+  const [form, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const { username, password } = form;
+  const isAuthenticated = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const onChange = (e) => {
+    setFormData({ ...form, [e.target.name]: e.target.value });
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(form));
+  };
   return (
     <Container>
-      <Img src={green} alt='earth'></Img>
+      <Img src={green} alt="earth"></Img>
       <h1>Log in to GreenOrb</h1>
-      <Form autoComplete='off' autofill='off'>
+      <Form autoComplete="off" autofill="off" onSubmit={submit}>
         <FormGroup>
           <Input
-            type='text'
-            name='username'
-            autoComplete='off'
-            autofill='off'
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => onChange(e)}
+            autoComplete="off"
+            autofill="off"
             required
           />
           <p>Username</p>
         </FormGroup>
         <FormGroup>
           <Input
-            type='password'
-            name='password'
-            autoComplete='new-password'
-            minLength='6'
+            type="password"
+            value={password}
+            onChange={(e) => onChange(e)}
+            name="password"
+            autoComplete="new-password"
+            minLength="6"
           />
           <p>Password</p>
         </FormGroup>
-        <Button type='submit'>Log In</Button>
+        <Button type="submit">Log In</Button>
       </Form>
-      <p className='foot-text'>
+      <p className="foot-text">
         Don't have an account?﹒
-        <Link to='/signup' className='link'>
+        <Link to="/signup" className="link">
           Sign Up
         </Link>
       </p>

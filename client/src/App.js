@@ -2,13 +2,14 @@ import React, { Fragment } from 'react';
 import GlobalStyle from './styles/globalStyles';
 import { Landing, SignUp, Login } from './components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { GlobalProvider } from './context/GlobalState';
+import store from './store';
+import { Provider } from 'react-redux';
 
 function App() {
   return (
     <Fragment>
       <GlobalStyle />
-      <GlobalProvider>
+      <Provider store={store}>
         <Router>
           <Switch>
             <Route exact path="/" component={Landing} />
@@ -16,7 +17,7 @@ function App() {
             <Route exact path="/login" component={Login} />
           </Switch>
         </Router>
-      </GlobalProvider>
+      </Provider>
     </Fragment>
   );
 }
