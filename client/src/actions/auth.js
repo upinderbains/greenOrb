@@ -24,18 +24,19 @@ export const registerUser = ({ username, email, password }) => async (
       body,
       config
     );
-    console.log(res);
     const { data } = res;
     dispatch({
       type: REGISTER_SUCCESS,
       payload: data,
     });
   } catch (error) {
-    const { data } = error.response;
-    dispatch({
-      type: REGISTER_FAIL,
-      payload: data,
-    });
+    if (typeof error.response !== 'undefined') {
+      const { data } = error.response;
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: data,
+      });
+    }
   }
 };
 
@@ -54,11 +55,13 @@ export const loginUser = ({ username, password }) => async (dispatch) => {
     });
     dispatch(loadUser());
   } catch (error) {
-    const { data } = error.response;
-    dispatch({
-      type: LOGIN_FAIL,
-      payload: data,
-    });
+    if (typeof error.response !== 'undefined') {
+      const { data } = error.response;
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: data,
+      });
+    }
   }
 };
 
@@ -78,10 +81,12 @@ export const loadUser = () => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
-    const { data } = error.response;
-    dispatch({
-      type: AUTH_ERROR,
-      payload: data,
-    });
+    if (typeof error.response !== 'undefined') {
+      const { data } = error.response;
+      dispatch({
+        type: AUTH_ERROR,
+        payload: data,
+      });
+    }
   }
 };

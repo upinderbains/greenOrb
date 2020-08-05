@@ -18,20 +18,20 @@ connectDB();
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/profile', require('./routes/profile'));
-
+app.use('/api/posts', require('./routes/posts'));
 
 function notFound(req, res, next) {
   res.status(404);
-  const error = new Error ('Not Found - ' + req.originalUrl);
+  const error = new Error('Not Found - ' + req.originalUrl);
   next(error);
 }
 
 function errorHandler(err, req, res, next) {
-  res.status(res.statusCode || 500);
+  res.status(500);
   res.json({
     msg: err.message,
-    stack: err.stack
-  })
+    stack: err.stack,
+  });
 }
 app.use(notFound);
 app.use(errorHandler);

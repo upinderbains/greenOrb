@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import green from '../../img/green.png';
 import Button from '../../styles/button';
@@ -12,17 +12,24 @@ const Login = () => {
     password: '',
   });
 
+  const history = useHistory();
   const { username, password } = form;
-  const isAuthenticated = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
   const onChange = (e) => {
     setFormData({ ...form, [e.target.name]: e.target.value });
   };
+
   const submit = (e) => {
     e.preventDefault();
     dispatch(loginUser(form));
   };
+  useEffect(() => {
+    if (isAuthenticated) {
+      history.push('/home');
+    }
+  });
+
   return (
     <Container>
       <Img src={green} alt="earth"></Img>
