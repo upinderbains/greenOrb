@@ -3,12 +3,14 @@ import SinglePost from './SinglePost';
 import { useSelector } from 'react-redux';
 
 const Posts = () => {
-  const post = useSelector((state) => state.post);
+  const state = useSelector(state => state);
+  const { post, auth } = state;
   const { posts } = post;
+  const { user } = auth;
   return (
     <div>
-      {posts.map((singlePost) => (
-        <SinglePost key={singlePost._id} post={singlePost} />
+      {posts.map(singlePost => (
+        <SinglePost key={singlePost._id} post={singlePost} auth={user} />
       ))}
     </div>
   );

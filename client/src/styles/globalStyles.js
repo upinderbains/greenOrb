@@ -84,6 +84,31 @@ ul{
   border-left: 1px solid rgb(201, 199, 199);
 }
 
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+    
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+   
+}
+
+.ReactModal__Content--after-open{
+  border-radius: 30px !important;
+  width: 60rem;
+  height: auto;
+  max-height: 70rem;
+  padding: 0px !important;
+  margin: auto;
+}
+
+
 `;
 
 export default GlobalStyle;

@@ -4,11 +4,16 @@ const auth = require('../middleware/auth');
 const Profile = require('../models/Profile');
 const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
+const helper = require('../utils/helper');
 
 router.post(
   '/',
   auth,
-  [check('name', 'name is required').not().isEmpty()],
+  [
+    check('name', 'name is required')
+      .not()
+      .isEmpty()
+  ],
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -19,6 +24,7 @@ router.post(
     const profileFields = {};
     profileFields.user = req.user.id;
 
+  
     if (name) profileFields.name = name;
     if (location) profileFields.location = location;
     if (bio) profileFields.bio = bio;
@@ -28,7 +34,7 @@ router.post(
       if (profile) {
         profile = await Profile.findOneAndUpdate(
           {
-            user: req.user.id,
+            user: req.user.id
           },
           { $set: profileFields },
           { new: true }
@@ -48,7 +54,7 @@ router.post(
 router.get('/user/:user_id', async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.params.user_id,
+      user: req.params.user_id
     }).populate('user', ['username']);
     if (!profile) {
       return res.status(400).json({ msg: 'Profile not found ' });
@@ -59,6 +65,20 @@ router.get('/user/:user_id', async (req, res) => {
       return res.status(400).json({ msg: 'Profile not found' });
     }
     res.status(500).json('Server Error');
+  }
+});
+
+router.post('/upload', async (req, res, next) => {
+  try {
+    const myFile = req.file;
+    const imageUrl = await helper.uploadImage(myFile);
+
+    res.status(200).json({
+      msg: 'Upload was successful',
+      data: imageUrl
+    });
+  } catch (error) {
+    next(error);
   }
 });
 

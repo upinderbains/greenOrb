@@ -1,14 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const app = express();
-const connectDB = require('./db/connection');
 
+const app = express();
+const multer = require('multer');
+const connectDB = require('./db/connection');
+const helper = require('./utils/helper');
 require('dotenv').config();
 
 app.use(morgan('combined'));
 app.use(cors());
 app.use(express.json());
+app.use(
+  multer({
+    filename: function(req, file, cb) {
+      cb(null, file.originalname);
+    },
+    fileFilter: helper.fileFilter
+  }).single('file')
+);
 
 //Connection to the database
 connectDB();
@@ -30,7 +40,7 @@ function errorHandler(err, req, res, next) {
   res.status(500);
   res.json({
     msg: err.message,
-    stack: err.stack,
+    stack: err.stack
   });
 }
 app.use(notFound);

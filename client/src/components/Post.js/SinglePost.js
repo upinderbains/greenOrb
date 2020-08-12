@@ -1,43 +1,76 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link, useHistory } from 'react-router-dom';
 import ProfilePic from '../../styles/profilePic';
+import PropTypes from 'prop-types';
 import icon from '../../icons/sprite.svg';
+import Moment from 'react-moment';
+import { addLike, removeLike, deletePost } from '../../actions/post';
+import { useDispatch } from 'react-redux';
+import Trash from './Trash';
 
-const SinglePost = ({ post: { _id, text, date, user } }) => {
+const SinglePost = ({ post: { _id, text, date, likes, user }, auth }) => {
   const { username } = user;
+  const dispatch = useDispatch();
+
+  const like = () => {
+    const found = likes.some(el => el.user === auth._id);
+    if (found) dispatch(removeLike(_id));
+    if (!found) dispatch(addLike(_id));
+  };
+
+  const deleteButton = () => {
+    dispatch(deletePost(_id));
+  };
   return (
-    <Container>
-      <ImgWrapper>
-        <ProfilePic />
-      </ImgWrapper>
-      <PostWrapper>
-        <UserName>
-          <p className="name">{username}</p>
-          <span className="username">@upinder11 •</span>
-        </UserName>
-        <div className="text">
-          <p>{text}</p>
-        </div>
-        <ActionWrapper>
-          <div className="action">
-            <Button>
-              <Svg>
-                <use xlinkHref={`${icon}#icon-chat`} />
-              </Svg>
-            </Button>
-            <span className="action_num">5</span>
+    <StyledLink className='button' to={`/post/${_id}`}>
+      <Container>
+        <ImgWrapper>
+          <ProfilePic />
+        </ImgWrapper>
+        <PostWrapper>
+          <UserName>
+            <p className='name'>{username}</p>
+            <span className='username'>
+              @upinder11 •{' '}
+              <Moment fromNow ago>
+                {date}
+              </Moment>
+            </span>
+          </UserName>
+          <div className='text'>
+            <p>{text}</p>
           </div>
-          <div className="action">
-            <Button>
-              <Svg>
-                <use xlinkHref={`${icon}#icon-heart`} />
-              </Svg>
-            </Button>
-            <span className="action_num">5</span>
-          </div>
-        </ActionWrapper>
-      </PostWrapper>
-    </Container>
+          <ActionWrapper>
+            <div className='action'>
+              <Button>
+                <Svg>
+                  <use xlinkHref={`${icon}#icon-chat`} />
+                </Svg>
+              </Button>
+              <span className='action_num'>5</span>
+            </div>
+            <div className='action'>
+              <Button onClick={like}>
+                <Svg
+                  liked={
+                    auth && auth._id && likes.some(el => el.user === auth._id)
+                  }
+                >
+                  <use xlinkHref={`${icon}#icon-heart`} />
+                </Svg>
+              </Button>
+              <span className='action_num'>{likes.length}</span>
+            </div>
+          </ActionWrapper>
+          {user && auth && user._id && auth._id && user._id === auth._id ? (
+            <DeleteButton onClick={deleteButton}>
+              <Trash />
+            </DeleteButton>
+          ) : null}
+        </PostWrapper>
+      </Container>
+    </StyledLink>
   );
 };
 
@@ -45,14 +78,26 @@ const Container = styled.div`
   display: flex;
   padding: 1rem;
   border-bottom: 1px solid rgb(229, 232, 236);
+  width: 100%;
 `;
 
+const StyledLink = styled(Link)`
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  &:hover {
+    background-color: #f7fafc;
+    text-decoration: none;
+  }
+`;
 const ImgWrapper = styled.div`
   margin-right: 1rem;
+  z-index: 110;
 `;
 const PostWrapper = styled.div`
   width: 90%;
-
+  position: relative;
   .text {
     display: inline-block;
     max-width: 100%;
@@ -64,12 +109,24 @@ const PostWrapper = styled.div`
   }
 `;
 
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 2rem;
+  width: 2rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  z-index: 110;
+`;
+
 const UserName = styled.div`
   margin-bottom: 0.5rem;
   .name {
     font-size: 1.6rem;
     font-weight: 700;
     display: inline-block;
+    z-index: 110;
   }
 
   .username {
@@ -101,7 +158,7 @@ const Button = styled.button`
   padding: 0.6rem 0.8rem;
   border-radius: 50%;
   cursor: pointer;
-  outline: nonoe;
+  outline: none;
   color: rgb(135, 139, 141);
 
   &:hover {
@@ -117,8 +174,21 @@ const Button = styled.button`
 const Svg = styled.svg`
   height: 2rem;
   width: 2rem;
-  fill: none;
+  fill: ${props => (props.liked ? 'rgb(131, 175, 131)' : 'none')};
+  color: ${props =>
+    props.liked ? 'rgb(131, 175, 131)' : 'rgb(135, 139, 141)'};
   stroke: currentColor;
   outline: none;
+  z-index: 110;
 `;
+
+SinglePost.propTypes = {
+  post: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+SinglePost.defaultProps = {
+  post: {},
+  auth: {}
+};
 export default SinglePost;

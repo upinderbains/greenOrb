@@ -9,9 +9,10 @@ const Button = styled.button`
   text-decoration: none;
   color: var(--color-white);
   cursor: pointer;
-  font-size: var(--fs-3);
+  font-size: var(--fs-4);
   font-weight: 700;
-  width: 100%;
+  min-width: 10rem;
+  z-index: 110;
 
   &:hover,
   &:focus {
