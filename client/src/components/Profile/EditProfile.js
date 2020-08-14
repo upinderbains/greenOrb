@@ -30,7 +30,6 @@ const EditProfile = ({ closeModal, profile }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSave = () => {
-    console.log(formData)
     dispatch(createProfile(formData));
     closeModal();
   };

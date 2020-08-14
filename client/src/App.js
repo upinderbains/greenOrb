@@ -10,6 +10,7 @@ import { loadUser } from './actions/auth';
 import Layout from './components/Layout/Layout';
 import EditProfile from './components/Profile/EditProfile';
 import SinglePost from './components/SinglePost';
+import MainForm from './components/signUp/MultiStep';
 
 function App() {
   useEffect(() => {
@@ -24,6 +25,7 @@ function App() {
           <Switch>
             <Route exact path='/' component={Landing} />
             <Route exact path='/signup' component={SignUp} />
+            <PrivateRoute exact path='/create-profile' component={MainForm} />
             <Route exact path='/login' component={Login} />
             <PrivateRoute exact path='/home' component={Home} layout={Layout} />
             <PrivateRoute
