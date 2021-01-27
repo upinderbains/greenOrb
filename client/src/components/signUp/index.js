@@ -5,6 +5,7 @@ import green from '../../img/green.png';
 import Button from '../../styles/button';
 import { registerUser } from '../../actions/auth';
 import { useDispatch } from 'react-redux';
+import Error from '../Error' ;
 
 const SignUp = () => {
   const [form, setFormDate] = useState({
@@ -13,6 +14,7 @@ const SignUp = () => {
     password: '',
     password2: ''
   });
+  const [passError, setpassError] = useState('');
   const { username, email, password, password2 } = form;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -23,11 +25,10 @@ const SignUp = () => {
   const submit = e => {
     e.preventDefault();
     if (password !== password2) {
-      console.log('password do not match');
+      setpassError('password do not match');
     } else {
       dispatch(registerUser(form));
-      history.push('/create-profile');
-
+      return history.push('/create-profile');
     }
   };
 
@@ -35,6 +36,7 @@ const SignUp = () => {
     <Container>
       <Img src={green} alt='earth'></Img>
       <h1>Create your account</h1>
+      <Error error={passError} />
       <Form onSubmit={submit}>
         <FormGroup>
           <Input
@@ -76,7 +78,12 @@ const SignUp = () => {
           />
           <p>Confirm password</p>
         </FormGroup>
-        <Button type='submit'>Sign Up</Button>
+        <Button
+          type='submit'
+          disabled={!username || !email || !password || !password2}
+        >
+          Sign Up
+        </Button>
       </Form>
       <p className='foot-text'>
         Already have an account?﹒
@@ -96,7 +103,6 @@ const Container = styled.section`
   margin-top: 5rem;
   h1 {
     font-size: 2rem;
-    margin-bottom: 2rem;
   }
 
   .foot-text {

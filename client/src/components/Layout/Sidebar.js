@@ -6,39 +6,55 @@ import profile from '../../img/default-avatar.png';
 import { useSelector, useDispatch } from 'react-redux';
 import Button from '../../styles/button';
 import { LOGOUT } from '../../actions/type';
-import icons from '../../icons/sprite.svg';
+import HomeIcon from '../../icons/home';
+import MessageIcon from '../../icons/message';
 
 const Sidebar = () => {
   const dispatch = useDispatch();
+  const { user } = useSelector(state => state.auth);
+
   return (
     <Container>
       <Nav>
         <List>
           <NavLink to={'/home'}>
-            <Image style={{ marginLeft: '1rem' }} src={green} alt="app logo" />
+            <Image style={{ marginLeft: '1rem' }} src={green} alt='app logo' />
           </NavLink>
         </List>
         <List>
-          <NavLink className="link" to={'/home'}>
-            <Svg>
-              <use xlinkHref={`${icons}#icon-home`} />
-            </Svg>
-            <span className="text">Home</span>
+          <NavLink
+            className='link'
+            to={'/home'}
+            activeStyle={{
+              color: 'green'
+            }}
+          >
+            <HomeIcon />
+            <span className='text'>Home</span>
           </NavLink>
         </List>
         <List>
-          <NavLink className="link" to={'/messages'}>
-            <Svg>
-              <use xlinkHref={`${icons}#icon-message`} />
-            </Svg>
-            <span className="text">Messages</span>
+          <NavLink
+            className='link'
+            to={'/messages'}
+            activeStyle={{
+              color: 'green'
+            }}
+          >
+            <MessageIcon />
+            <span className='text'>Messages</span>
           </NavLink>
         </List>
-
         <List>
-          <NavLink className="link" to={'/profile'}>
-            <Image src={profile} alt="app logo" />
-            <span className="text">Profile</span>
+          <NavLink
+            className='link'
+            to={`/profile/${user && user._id}`}
+            activeStyle={{
+              color: 'green'
+            }}
+          >
+            <Image src={profile} alt='app logo' />
+            <span className='text'>Profile</span>
           </NavLink>
         </List>
         <List>
@@ -47,7 +63,7 @@ const Sidebar = () => {
             onClick={() =>
               dispatch({
                 type: LOGOUT,
-                payload: {},
+                payload: {}
               })
             }
           >
@@ -93,6 +109,14 @@ const List = styled.li`
     &:hover svg {
       fill: currentColor;
     }
+
+    .activeLink {
+      color: red;
+
+      svg {
+        fill: red;
+      }
+    }
   }
 
   .text {
@@ -104,12 +128,5 @@ const Image = styled.img`
   width: 3.5rem;
   margin-right: 2rem;
 `;
-const Svg = styled.svg`
-  height: 3rem;
-  width: 3rem;
-  margin-right: 2rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
-`;
+
 export default Sidebar;

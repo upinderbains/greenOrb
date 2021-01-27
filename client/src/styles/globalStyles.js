@@ -88,11 +88,11 @@ ul{
     opacity: 0;
     transition: opacity 200ms ease-in-out;
 }
-
 .ReactModal__Overlay--after-open{
-    opacity: 1;
-    
-}
+    opacity: 1; 
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 500 !important;
+    }
 
 .ReactModal__Overlay--before-close{
     opacity: 0;
@@ -100,14 +100,15 @@ ul{
 }
 
 .ReactModal__Content--after-open{
-  border-radius: 30px !important;
-  width: 60rem;
+  border-radius: 15px !important;
+  max-width: 60rem;
   height: auto;
   max-height: 70rem;
   padding: 0px !important;
-  margin: auto;
+  margin: 5rem auto;
+  z-index: 500 !important;
+  
 }
-
 
 `;
 

@@ -11,7 +11,7 @@ const Button = styled.button`
   cursor: pointer;
   font-size: var(--fs-4);
   font-weight: 700;
-  min-width: 10rem;
+  width: 100%;
   z-index: 110;
 
   &:hover,
@@ -21,6 +21,11 @@ const Button = styled.button`
   &:active {
     background-color: var(--color-tertiary);
     color: white;
+  }
+  &:disabled{
+    opacity: 0.5;
+    cursor: default;
+    background-color: var(--color-primary);
   }
 `;
 

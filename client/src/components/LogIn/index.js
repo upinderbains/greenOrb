@@ -5,22 +5,23 @@ import green from '../../img/green.png';
 import Button from '../../styles/button';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../../actions/auth';
+import Error from '../Error';
 
 const Login = () => {
   const [form, setFormData] = useState({
     username: '',
-    password: '',
+    password: ''
   });
 
   const history = useHistory();
   const { username, password } = form;
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, error } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const onChange = (e) => {
+  const onChange = e => {
     setFormData({ ...form, [e.target.name]: e.target.value });
   };
 
-  const submit = (e) => {
+  const submit = e => {
     e.preventDefault();
     dispatch(loginUser(form));
   };
@@ -28,41 +29,45 @@ const Login = () => {
     if (isAuthenticated) {
       history.push('/home');
     }
-  });
+  }, [isAuthenticated]);
 
   return (
     <Container>
-      <Img src={green} alt="earth"></Img>
+      <Img src={green} alt='earth'></Img>
       <h1>Log in to GreenOrb</h1>
-      <Form autoComplete="off" autofill="off" onSubmit={submit}>
+      {error && error.map(el => <Error error={el.msg} />)}
+      <Form autoComplete='off' autofill='off' onSubmit={submit}>
         <FormGroup>
           <Input
-            type="text"
-            name="username"
+            type='text'
+            name='username'
             value={username}
-            onChange={(e) => onChange(e)}
-            autoComplete="off"
-            autofill="off"
+            onChange={e => onChange(e)}
+            autoComplete='off'
+            autofill='off'
             required
           />
           <p>Username</p>
         </FormGroup>
         <FormGroup>
           <Input
-            type="password"
+            type='password'
             value={password}
-            onChange={(e) => onChange(e)}
-            name="password"
-            autoComplete="new-password"
-            minLength="6"
+            onChange={e => onChange(e)}
+            name='password'
+            autoComplete='new-password'
+            minLength='6'
+            required
           />
           <p>Password</p>
         </FormGroup>
-        <Button type="submit">Log In</Button>
+        <Button type='submit' disabled={!password || !username}>
+          Log In
+        </Button>
       </Form>
-      <p className="foot-text">
+      <p className='foot-text'>
         Don't have an account?﹒
-        <Link to="/signup" className="link">
+        <Link to='/signup' className='link'>
           Sign Up
         </Link>
       </p>
@@ -78,7 +83,6 @@ const Container = styled.section`
   margin-top: 5rem;
   h1 {
     font-size: 2rem;
-    margin-bottom: 2rem;
   }
 
   .foot-text {
@@ -103,6 +107,7 @@ const Img = styled.img`
 
 const Form = styled.form`
   width: 50rem;
+  margin-top: 1rem;
 `;
 const FormGroup = styled.div`
   width: 100%;

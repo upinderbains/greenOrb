@@ -18,7 +18,7 @@ const FormGroup = styled.div`
     width: 100%;
     height: 100%;
     pointer-events: none;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     color: rgb(99, 100, 102);
     border-radius: 3px;
     padding: 2px 10px;

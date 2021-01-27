@@ -4,44 +4,44 @@ const Schema = mongoose.Schema;
 const profileSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'user'
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   location: {
-    type: String,
+    type: String
   },
   bio: {
-    type: String,
+    type: String
   },
   profile_photo: {
-    type: String,
+    type: String
   },
   background: {
-    type: String,
+    type: String
   },
   followers: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-    },
+        ref: 'user'
+      }
+    }
   ],
   following: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-    },
+        ref: 'user'
+      }
+    }
   ],
   date: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 module.exports = Profile = mongoose.model('profile', profileSchema);

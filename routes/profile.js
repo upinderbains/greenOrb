@@ -24,7 +24,6 @@ router.post(
     const profileFields = {};
     profileFields.user = req.user.id;
 
-  
     if (name) profileFields.name = name;
     if (location) profileFields.location = location;
     if (bio) profileFields.bio = bio;
@@ -78,6 +77,22 @@ router.post('/upload', async (req, res, next) => {
       data: imageUrl
     });
   } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/follow/:id', auth, async (req, res, next) => {
+  try {
+    const profile = await Profile.findOne({ user: req.params.id });
+    const userProfle = await Profile.findOne({ user: req.user.id });
+    profile.followers.unshift({ user: req.user.id });
+    userProfle.following.unshift({ user: req.params.id });
+    await profile.save();
+    res.json(profile.followers);
+  } catch (error) {
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Profile not found' });
+    }
     next(error);
   }
 });

@@ -13,7 +13,6 @@ export const createProfile = ({ name, bio, location }) => async dispatch => {
   try {
     const res = await axios.post(`${url}`, body, config);
     const { data } = res;
-
     dispatch({
       type: GET_PROFILE,
       payload: data
@@ -31,9 +30,8 @@ export const createProfile = ({ name, bio, location }) => async dispatch => {
 
 export const getProfile = id => async dispatch => {
   try {
-    const res = await axios.get(`${url}/user/${id}`);
+    const res = await axios.get(url + `/user/${id}`);
     const { data } = res;
-    console.log(data);
     dispatch({
       type: GET_PROFILE,
       payload: data

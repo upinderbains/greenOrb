@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import Name from './Name';
 import Modal from 'react-modal';
 import Bio from './Bio';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createProfile } from '../../../actions/profile';
 
 const MainForm = () => {
@@ -12,6 +12,7 @@ const MainForm = () => {
     name: '',
     bio: ''
   });
+
   const dispatch = useDispatch();
   const history = useHistory();
   const nextStep = () => {
@@ -28,9 +29,19 @@ const MainForm = () => {
     history.push('/home');
   };
 
+  const { isAuthenticated } = useSelector(state => state.auth);
+
   return (
     <>
-      <Modal closeTimeoutMS={200} isOpen={true}>
+      <Modal
+        closeTimeoutMS={200}
+        isOpen={true}
+        style={{
+          content: {
+            height: '20rem'
+          }
+        }}
+      >
         {(function() {
           switch (step) {
             case 1:

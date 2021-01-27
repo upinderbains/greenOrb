@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import icons from '../../icons/sprite.svg';
+import SearchIcon from '../../icons/search'
 
 const Searchbar = () => {
   return (
@@ -8,9 +8,7 @@ const Searchbar = () => {
       <Form>
         <input className="input" type="text" placeholder="Search" />
         <div className="icon">
-          <Svg>
-            <use xlinkHref={`${icons}#icon-magnifying-glass`} />
-          </Svg>
+          <SearchIcon />
         </div>
       </Form>
     </Container>
@@ -22,12 +20,6 @@ const Container = styled.section`
   padding: 5rem 2rem;
 `;
 
-const Svg = styled.svg`
-  height: 2rem;
-  width: 2rem;
-  fill: currentColor;
-  outline: none;
-`;
 
 const Form = styled.form`
   position: relative;

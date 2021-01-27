@@ -25,12 +25,12 @@ function App() {
           <Switch>
             <Route exact path='/' component={Landing} />
             <Route exact path='/signup' component={SignUp} />
-            <PrivateRoute exact path='/create-profile' component={MainForm} />
+            <Route exact path='/create-profile' component={MainForm} />
             <Route exact path='/login' component={Login} />
             <PrivateRoute exact path='/home' component={Home} layout={Layout} />
             <PrivateRoute
               exact
-              path='/profile'
+              path='/profile/:id'
               component={Profile}
               layout={Layout}
             />

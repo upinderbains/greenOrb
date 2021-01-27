@@ -1,5 +1,5 @@
 import React from 'react';
-import SinglePost from './SinglePost';
+import Post from './Post';
 import { useSelector } from 'react-redux';
 
 const Posts = () => {
@@ -10,7 +10,7 @@ const Posts = () => {
   return (
     <div>
       {posts.map(singlePost => (
-        <SinglePost key={singlePost._id} post={singlePost} auth={user} />
+        <Post key={singlePost._id} post={singlePost} auth={user} />
       ))}
     </div>
   );

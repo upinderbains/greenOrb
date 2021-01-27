@@ -47,7 +47,6 @@ const EditProfile = ({ closeModal, profile }) => {
         </div>
       </FormActions>
       <BackgroundImage>
-        background image
         <div>
           <StyledProfilePic />
         </div>

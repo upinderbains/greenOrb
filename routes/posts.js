@@ -4,9 +4,8 @@ const auth = require('../middleware/auth');
 const { check, validationResult } = require('express-validator');
 
 const Posts = require('../models/Posts');
-const Profile = require('../models/Profile');
 
-router.get('/', auth, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const posts = await Posts.find()
       .sort({ date: -1 })
@@ -17,20 +16,55 @@ router.get('/', auth, async (req, res, next) => {
   }
 });
 
+router.get('/user/:id', async (req, res, next) => {
+  try {
+    const posts = await Posts.find({ user: req.params.id })
+      .sort({ date: -1 })
+      .populate('user', ['username']);
+    res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:id', async (req, res, next) => {
+  try {
+    const post = await Posts.findById(req.params.id).populate(
+      'user',
+      '-password'
+    );
+    const posts = await Posts.find({ responseTo: req.params.id })
+      .sort({ date: -1 })
+      .populate('user', ['username']);
+    res.status(200).json({ post, posts });
+  } catch (error) {
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+    next(error);
+  }
+});
+
 router.post(
   '/',
-  [check('text', 'Some text is required').not().isEmpty()],
   auth,
+  [
+    check('text', 'Some text is required')
+      .not()
+      .isEmpty()
+  ],
   async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    console.log(req.body);
     try {
       const newPost = new Posts({
         text: req.body.text,
         user: req.user.id,
+        responseTo: req.body.postId
       });
       const post = await newPost.save();
       res.status(200).json(post);
@@ -62,7 +96,7 @@ router.delete('/:id', auth, async (req, res, next) => {
 router.put('/like/:id', auth, async (req, res, next) => {
   try {
     const post = await Posts.findById(req.params.id);
-    const ifLiked = post.likes.some((el) => el.user.toString() === req.user.id);
+    const ifLiked = post.likes.some(el => el.user.toString() === req.user.id);
     if (ifLiked) {
       return res.status(404).json({ msg: 'Post already liked' });
     }
@@ -80,12 +114,12 @@ router.put('/like/:id', auth, async (req, res, next) => {
 router.put('/unlike/:id', auth, async (req, res, next) => {
   try {
     const post = await Posts.findById(req.params.id);
-    const ifLiked = post.likes.some((el) => el.user.toString() === req.user.id);
+    const ifLiked = post.likes.some(el => el.user.toString() === req.user.id);
     if (!ifLiked) {
       return res.status(400).json({ msg: 'Post not yet liked' });
     }
     const removeIndex = post.likes.findIndex(
-      (el) => el.user.toString() === req.user.id
+      el => el.user.toString() === req.user.id
     );
     console.log(removeIndex);
     post.likes.splice(removeIndex, 1);

@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import Modal from 'react-modal';
 import { Link, useHistory } from 'react-router-dom';
 import ProfilePic from '../../styles/profilePic';
 import PropTypes from 'prop-types';
-import icon from '../../icons/sprite.svg';
+import ChatIcon from '../../icons/chat';
+import HeartIcon from '../../icons/heart';
 import Moment from 'react-moment';
 import { addLike, removeLike, deletePost } from '../../actions/post';
 import { useDispatch } from 'react-redux';
 import Trash from './Trash';
+import Comment from '../Comment';
 
-const SinglePost = ({ post: { _id, text, date, likes, user }, auth }) => {
+const Post = ({ post: { _id, text, date, likes, user, comments }, auth }) => {
+  const [openComment, setOpenComment] = useState(false);
+
   const { username } = user;
   const dispatch = useDispatch();
-
-  const like = () => {
+  const history = useHistory();
+  const values = { _id, text, date, user, auth };
+  const like = e => {
+    e.stopPropagation();
+    e.preventDefault();
     const found = likes.some(el => el.user === auth._id);
     if (found) dispatch(removeLike(_id));
     if (!found) dispatch(addLike(_id));
@@ -22,15 +30,34 @@ const SinglePost = ({ post: { _id, text, date, likes, user }, auth }) => {
   const deleteButton = () => {
     dispatch(deletePost(_id));
   };
+
+  const comment = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenComment(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenComment(false);
+  };
+
+  const singlePost = e => {
+    history.push(`/post/${_id}`);
+  };
   return (
-    <StyledLink className='button' to={`/post/${_id}`}>
-      <Container>
+    <>
+      <Container onClick={singlePost}>
         <ImgWrapper>
           <ProfilePic />
         </ImgWrapper>
         <PostWrapper>
           <UserName>
-            <p className='name'>{username}</p>
+            <ProfileLink
+              to={`/profile/${user && user._id}`}
+              onClick={e => e.stopPropagation()}
+            >
+              {username}
+            </ProfileLink>
             <span className='username'>
               @upinder11 •{' '}
               <Moment fromNow ago>
@@ -43,22 +70,18 @@ const SinglePost = ({ post: { _id, text, date, likes, user }, auth }) => {
           </div>
           <ActionWrapper>
             <div className='action'>
-              <Button>
-                <Svg>
-                  <use xlinkHref={`${icon}#icon-chat`} />
-                </Svg>
+              <Button onClick={comment}>
+                <ChatIcon />
               </Button>
-              <span className='action_num'>5</span>
+              <span className='action_num'>{comments && comments.length}</span>
             </div>
             <div className='action'>
               <Button onClick={like}>
-                <Svg
+                <HeartIcon
                   liked={
                     auth && auth._id && likes.some(el => el.user === auth._id)
                   }
-                >
-                  <use xlinkHref={`${icon}#icon-heart`} />
-                </Svg>
+                />
               </Button>
               <span className='action_num'>{likes.length}</span>
             </div>
@@ -70,7 +93,19 @@ const SinglePost = ({ post: { _id, text, date, likes, user }, auth }) => {
           ) : null}
         </PostWrapper>
       </Container>
-    </StyledLink>
+      <Modal
+        closeTimeoutMS={200}
+        isOpen={openComment}
+        onRequestClose={handleCloseModal}
+        style={{
+          content: {
+            height: '38rem'
+          }
+        }}
+      >
+        <Comment closeModal={handleCloseModal} post={values} />
+      </Modal>
+    </>
   );
 };
 
@@ -79,21 +114,30 @@ const Container = styled.div`
   padding: 1rem;
   border-bottom: 1px solid rgb(229, 232, 236);
   width: 100%;
-`;
-
-const StyledLink = styled(Link)`
   width: 100%;
   height: 100%;
-  display: block;
+  z-index: 10;
 
   &:hover {
     background-color: #f7fafc;
     text-decoration: none;
+    z-index: 10;
+    cursor: pointer;
+  }
+`;
+
+const ProfileLink = styled(Link)`
+  z-index: 2000;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: inline-block;
+  color: rgb(20, 23, 26);
+  &:hover {
+    text-decoration: underline;
   }
 `;
 const ImgWrapper = styled.div`
   margin-right: 1rem;
-  z-index: 110;
 `;
 const PostWrapper = styled.div`
   width: 90%;
@@ -117,23 +161,24 @@ const DeleteButton = styled.button`
   border: none;
   outline: none;
   background: transparent;
-  z-index: 110;
 `;
 
 const UserName = styled.div`
   margin-bottom: 0.5rem;
-  .name {
-    font-size: 1.6rem;
-    font-weight: 700;
-    display: inline-block;
-    z-index: 110;
-  }
 
   .username {
     font-size: 1.6rem;
     font-weight: 400;
-    color: rgba(161, 165, 168);
+    color: #a1a5a8;
     margin: 0rem 0.8rem;
+  }
+
+  .profile-link {
+    z-index: 110;
+    color: red;
+    &:hover {
+      color: red;
+    }
   }
 `;
 const ActionWrapper = styled.div`
@@ -171,24 +216,13 @@ const Button = styled.button`
   }
 `;
 
-const Svg = styled.svg`
-  height: 2rem;
-  width: 2rem;
-  fill: ${props => (props.liked ? 'rgb(131, 175, 131)' : 'none')};
-  color: ${props =>
-    props.liked ? 'rgb(131, 175, 131)' : 'rgb(135, 139, 141)'};
-  stroke: currentColor;
-  outline: none;
-  z-index: 110;
-`;
-
-SinglePost.propTypes = {
+Post.propTypes = {
   post: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired
 };
 
-SinglePost.defaultProps = {
+Post.defaultProps = {
   post: {},
   auth: {}
 };
-export default SinglePost;
+export default Post;

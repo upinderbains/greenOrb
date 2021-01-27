@@ -33,12 +33,12 @@ const Landing = () => {
           <h1>See what's happening in the Green Planet right now</h1>
           <h2>Join GreenOrb today.</h2>
           <div className='button'>
-            <Link to='/login'>
+            <StyledLink to='/login'>
               <Button>Log in</Button>
-            </Link>
-            <Link to='/signup'>
+            </StyledLink>
+            <StyledLink to='/signup'>
               <Button>Sign Up</Button>
-            </Link>
+            </StyledLink>
           </div>
         </div>
       </SignPage>
@@ -109,4 +109,8 @@ const Content = styled.div`
 
 const Img = styled.img`
   width: 70px;
+`;
+
+const StyledLink = styled(Link)`
+  margin: 1rem;
 `;

@@ -9,30 +9,30 @@ const CreatePost = () => {
   const [text, setText] = useState('');
   const dispatch = useDispatch();
 
-  const submit = (e) => {
+  const submit = e => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(createPost({ text }));
+    dispatch(createPost(text));
     setText('');
   };
   return (
     <Container>
-      <h2 className="heading">Home</h2>
-      <form className="form">
+      <h2 className='heading'>Home</h2>
+      <form className='form'>
         <FormGroup>
           <Logo />
           <textarea
-            rows="5"
-            className="textarea"
-            placeholder="Say Something..."
-            pattern=".*\S*"
+            rows='5'
+            className='textarea'
+            placeholder='Say Something...'
+            pattern='.*\S*'
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={e => setText(e.target.value)}
             required
           />
         </FormGroup>
-        <div className="button">
-          <Button type="submit" onClick={submit} disabled={!text}>
+        <div className='button'>
+          <Button type='submit' onClick={submit} disabled={!text}>
             Submit
           </Button>
         </div>

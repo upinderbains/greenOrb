@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProfile } from '../../actions/profile';
+import { getMyPost } from '../../actions/post';
 import Modal from 'react-modal';
-import Layout from '../Layout/Layout';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
 import ProfilePic from '../../styles/profilePic';
 import Button from '../../styles/button';
-import TrashIcon from '../../icons/trash';
+import LocationIcon from '../../icons/location';
+import CalendarIcon from '../../icons/calendar';
 import EditProfile from './EditProfile';
+import Post from '../Post';
+import Moment from 'react-moment';
 
 const Profile = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -20,21 +24,29 @@ const Profile = () => {
   };
 
   const dispatch = useDispatch();
-
+  const { id } = useParams();
   const state = useSelector(state => state);
   const { auth, userProfile } = state;
   const { user } = auth;
   const { profile } = userProfile;
-  const { name, location, bio, date } = profile;
+  const { name, location, bio, date, user: profileUser } = profile;
 
   useEffect(() => {
-    if (user && user._id) {
-      dispatch(getProfile(user._id));
-    }
+    dispatch(getProfile(id));
+    dispatch(getMyPost(id));
   }, []);
+
+  function ifUser() {
+    let userId;
+    let profileId;
+    if (user) userId = user._id;
+    if (profileUser) profileId = profileUser._id;
+    return userId === profileId;
+  }
 
   return (
     <>
+      useImperativeHandle
       <Wrapper>
         <div>
           <ProfileTitle>
@@ -42,7 +54,6 @@ const Profile = () => {
             <span>No post yet</span>
           </ProfileTitle>
           <BackgroundImage>
-            background image
             <div>
               <StyledProfilePic />
             </div>
@@ -50,7 +61,11 @@ const Profile = () => {
         </div>
         <div className='profile-content'>
           <div className='button'>
-            <Button onClick={handleOpenModal}>Edit Profile</Button>
+            {ifUser() ? (
+              <Button onClick={handleOpenModal}>Edit Profile</Button>
+            ) : (
+              <Button>Follow</Button>
+            )}
           </div>
           <ProfileTitle>
             <h1>{name}</h1>
@@ -61,15 +76,17 @@ const Profile = () => {
             <div className='profile-info'>
               <ProfileInfoItem>
                 <div className='icon'>
-                  <TrashIcon />
+                  <LocationIcon />
                 </div>
-                <span>{location}</span>
+                <span className='location-info'>{location}</span>
               </ProfileInfoItem>
               <ProfileInfoItem>
                 <div className='icon'>
-                  <TrashIcon></TrashIcon>
+                  <CalendarIcon />
                 </div>
-                <span>Joined August 2010</span>
+                <span className='join-info'>
+                  Joined <Moment format='LL'>{date}</Moment>
+                </span>
               </ProfileInfoItem>
             </div>
           </ProfileInfo>
@@ -85,7 +102,7 @@ const Profile = () => {
           </ProfileFollow>
         </div>
       </Wrapper>
-
+      <Post />
       <Modal
         closeTimeoutMS={200}
         isOpen={modalIsOpen}
@@ -100,6 +117,7 @@ const Profile = () => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  border-bottom: 1px solid rgb(229, 232, 236);
 
   .profile-content {
     margin: 2rem;
@@ -144,6 +162,7 @@ const ProfileInfo = styled.div`
   }
   .profile-info {
     display: flex;
+    margin-left: -10px;
   }
 `;
 const ProfileInfoItem = styled.div`
@@ -151,11 +170,20 @@ const ProfileInfoItem = styled.div`
   align-items: center;
   margin-right: 2rem;
   .icon {
-    width: 3rem;
     display: inline-block;
   }
-  span {
-    font-size: 1.5rem;
+
+  .location-info {
+    color: #a1a5a8;
+    font-size: 1.6rem;
+    text-transform: capitalize;
+    font-weight: 400;
+  }
+  .join-info {
+    color: #a1a5a8;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-left: 0.5rem;
   }
 `;
 const ProfileFollow = styled.div`
